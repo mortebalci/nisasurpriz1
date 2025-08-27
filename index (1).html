@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Nisa’ya Özel – Romantik Zarf</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Great+Vibes&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <style>
+    :root{
+      --bg1:#fff0f5; --bg2:#ffe3ec; --accent:#ff5a7a; --paper:#fffdf8; --ink:#3a2a30;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0; font-family:Poppins,system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Arial;
+      color:var(--ink);
+      background: radial-gradient(1200px 800px at 20% 10%, var(--bg2), transparent),
+                  radial-gradient(1200px 800px at 80% 90%, #ffeef5, transparent),
+                  linear-gradient(135deg, var(--bg1), #fff);
+      overflow:hidden;
+    }
+    .scene{ position:relative; height:100%; width:100%; display:grid; place-items:center; padding:22px }
+    .title{ position:absolute; top:18px; left:50%; transform:translateX(-50%); font-weight:700; color:#b33653 }
+    .envelope-wrapper{ position:relative; width:min(500px, 95vw); height:min(380px, 80vw); perspective:1200px; cursor:pointer; }
+    .envelope{ position:relative; width:100%; height:100%; }
+    .env-body{ position:absolute; inset:0; background:linear-gradient(180deg,#ffd4df,#ffc3d3); border-radius:16px; box-shadow:0 20px 40px #ff8dad3b, 0 8px 16px #ff6e8b2b; overflow:hidden }
+    .env-left,.env-right{ position:absolute; top:0; bottom:0; width:52%; background:linear-gradient(135deg,#ffb7c8,#ffa2b8) }
+    .env-left{ left:-2%; clip-path:polygon(0 0, 100% 50%, 0 100%) }
+    .env-right{ right:-2%; clip-path:polygon(100% 0, 0 50%, 100% 100%) }
+    .env-flap{ position:absolute; left:0; right:0; top:0; height:70%; transform-origin:top; background:linear-gradient(180deg,#ffc0cf,#ff92aa); clip-path:polygon(0 0, 50% 100%, 100% 0); border-top-left-radius:16px; border-top-right-radius:16px; transition:transform .9s cubic-bezier(.2,.7,.14,1); z-index:3 }
+    .heart{ position:absolute; left:50%; top:45%; transform:translate(-50%,-50%) rotate(-45deg); width:60px; height:60px; background:#ff5a7a; border-radius:8px 0 8px 0; z-index:4; box-shadow:0 6px 14px rgba(0,0,0,.25) }
+    .heart::before, .heart::after{ content:""; position:absolute; width:60px; height:60px; background:#ff5a7a; border-radius:50%; }
+    .heart::before{ top:-30px; left:0 }
+    .heart::after{ left:30px; top:0 }
+    .letter{ position:absolute; left:5%; right:5%; bottom:5%; height:80%; background:transparent; border-radius:12px; box-shadow:none; padding:0; transform:translateY(35%); transition:transform 1s; overflow:visible; z-index:4; font-size:18px; line-height:1.9; display:flex; align-items:center; justify-content:center }
+    .open .env-flap{ transform:rotateX(170deg) }
+    .hint{ margin-top:10px; font-size:13px; opacity:.75 }
+    .actions{ margin-top:12px; display:flex; gap:10px; justify-content:center }
+    .btn{ border:0; background:#ff6b88; color:white; padding:10px 14px; border-radius:999px; font-weight:700; box-shadow:0 8px 16px #ff5a7a5a; cursor:pointer }
+    .btn.secondary{ background:#ffd3dd; color:#b33653; box-shadow:none }
+    .petal{ position:fixed; top:-5%; pointer-events:none; color:#ff5a7a; opacity:.95; filter:drop-shadow(0 6px 12px #ff6d8a55); animation:fall linear forwards; z-index:50 }
+    @keyframes fall{ to{ transform:translateY(110vh) rotate(200deg); opacity:0 } }
+    .mega-heart{ position:fixed; inset:0; display:grid; place-items:center; z-index:200; pointer-events:none; animation:megaFade 5s ease-out forwards }
+    .mega-heart .big{ font-size:min(56vw,56vh); line-height:1; filter:drop-shadow(0 12px 28px rgba(255,109,138,.45)) }
+    @keyframes megaFade{ 0%{opacity:1; transform:scale(1)} 40%{opacity:1; transform:scale(1.15)} 100%{opacity:0; transform:scale(1.4)} }
+    .note-overlay{ position:fixed; inset:0; background:rgba(0,0,0,.08); backdrop-filter:blur(1.5px); z-index:9998 }
+    .note-card{ position:fixed; left:50%; top:50%; transform:translate(-50%,-50%) scale(.9); width:min(760px, 96vw); background:#fffdf8; color:#3a2a30; border-radius:18px; padding:40px 34px; box-shadow:0 30px 70px rgba(0,0,0,.35); opacity:0; pointer-events:auto; z-index:9999; overflow:hidden; text-align:left; font-size:20px; line-height:2 }
+    .note-card h2{ margin:0 0 14px; font-family:'Great Vibes', cursive; font-size:38px; color:#7d2441; text-align:center }
+    .note-card p{ margin:0 }
+    @keyframes notePop{ 0%{opacity:0; transform:translate(-50%,-40px) scale(.9)} 60%{opacity:1; transform:translate(-50%,-50%) scale(1.02)} 100%{opacity:1; transform:translate(-50%,-50%) scale(1)} }
+    .note-card .close-btn{ position:absolute; top:10px; right:12px; width:34px; height:34px; border:0; border-radius:999px; font-size:18px; cursor:pointer; background:#ffd6df; color:#7d2441; box-shadow:0 4px 10px rgba(0,0,0,.18) }
+    .note-card .close-btn:active{ transform:translateY(1px) }
+    .message{ display:none !important }
+  </style>
+</head>
+<body>
+  <div class="scene">
+    <h3 class="title">Dünyanın en güzel kadını, güzeller güzeli Nisa’ma ✨</h3>
+    <div class="envelope-wrapper" id="envelope">
+      <div class="envelope">
+        <div class="env-body">
+          <div class="env-left"></div>
+          <div class="env-right"></div>
+        </div>
+        <div class="env-flap"></div>
+        <div class="heart" id="heart"></div>
+        <div class="letter" id="letter"></div>
+      </div>
+    </div>
+    <div class="hint">Zarfa dokun ✉️❤️ • Mektuba tıklayınca not açılır</div>
+    <div class="actions">
+      <button class="btn" id="openBtn">Aç</button>
+      <button class="btn secondary" id="resetBtn">Sıfırla</button>
+    </div>
+  </div>
+
+  <script>
+    const envelope = document.getElementById('envelope');
+    const openBtn = document.getElementById('openBtn');
+    const resetBtn = document.getElementById('resetBtn');
+    const letterEl = document.getElementById('letter');
+
+    let opened = false, petalsInterval = null, megaHeartActive = false, megaHeartEndTs = 0;
+    const NOTE_TEXT = "Güzeller güzeli sevgilim iyi ki doğun, seni çok ama çok seviyorum. Bu yılın umarım çok güzel, huzurlu, mutlu ve sağlıklı geçer. Ben her zaman her koşulda ne yaşanırsa yaşansın yanındayım ve seni çok seviyorum <3";
+    const NOTE_TITLE = "Doğum günün kutlu olsun Aşkım";
+
+    function spawnPetal(){
+      const e=document.createElement('div');
+      e.className='petal';
+      e.textContent = Math.random() > 0.5 ? '❀' : '❤';
+      e.style.left=(Math.random()*100)+'%';
+      e.style.fontSize=(16+Math.random()*22)+'px';
+      e.style.animationDuration = (5 + Math.random()*5)+'s';
+      document.body.appendChild(e);
+      setTimeout(()=> e.remove(), 9000);
+    }
+    function startPetals(){ if (petalsInterval) return; spawnPetal(); petalsInterval = setInterval(spawnPetal, 280); }
+    function stopPetals(){ if(petalsInterval){ clearInterval(petalsInterval); petalsInterval=null; } document.querySelectorAll('.petal').forEach(p=>p.remove()); }
+
+    function showMegaHeart(){
+      const o=document.createElement('div'); o.className='mega-heart';
+      const b=document.createElement('div'); b.className='big'; b.textContent='❤'; o.appendChild(b);
+      document.body.appendChild(o);
+      megaHeartActive = true; megaHeartEndTs = performance.now()+5000;
+      setTimeout(()=>{ o.remove(); megaHeartActive=false; }, 5000);
+    }
+
+    function showNote(){
+      const launch = () => {
+        const overlay = document.createElement('div'); overlay.className='note-overlay';
+        const card = document.createElement('div'); card.className='note-card';
+        card.innerHTML = '<button class="close-btn" aria-label="Kapat">✖</button>' +
+          '<h2>'+NOTE_TITLE+'</h2>' +
+          '<p>'+NOTE_TEXT+'</p>';
+        document.body.appendChild(overlay); document.body.appendChild(card);
+        const seal = document.getElementById('heart'); if (seal) seal.style.visibility='hidden';
+        requestAnimationFrame(()=>{ card.style.animation='notePop .6s ease-out forwards'; });
+        function close(){ card.remove(); overlay.remove(); if (seal) seal.style.visibility='visible'; }
+        overlay.addEventListener('click', close);
+        card.querySelector('.close-btn').addEventListener('click', close);
+      };
+      const delay = megaHeartActive ? Math.max(0, megaHeartEndTs - performance.now()) : 0;
+      setTimeout(launch, delay);
+    }
+
+    function openEnvelope(){
+      if (opened) return; opened = true;
+      envelope.classList.add('open');
+      showMegaHeart();
+      startPetals();
+    }
+    function resetEnvelope(){
+      opened = false; envelope.classList.remove('open');
+      stopPetals();
+      document.querySelectorAll('.note-overlay, .note-card, .mega-heart').forEach(n=>n.remove());
+      const seal = document.getElementById('heart'); if (seal) seal.style.visibility='visible';
+    }
+
+    envelope.addEventListener('click', openEnvelope);
+    openBtn.addEventListener('click', openEnvelope);
+    resetBtn.addEventListener('click', resetEnvelope);
+    letterEl.addEventListener('click', showNote);
+  </script>
+</body>
+</html>
